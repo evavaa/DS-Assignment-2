@@ -12,8 +12,6 @@ public class Shape {
     private String message;
 
     private String shape;
-    private Font font;
-    private int fontSize;
     private int eraserSize;
 
 
@@ -29,11 +27,9 @@ public class Shape {
     }
 
     // text
-    public Shape(int x1, int y1, int fontSize, Font font, Color color, String shape, String message){
+    public Shape(int x1, int y1, Color color, String shape, String message){
         this.x1 = x1;
         this.y1 = y1;
-        this.font = font;
-        this.fontSize = fontSize;
         this.color = color;
         this.shape = shape;
         this.message = message;
@@ -73,17 +69,8 @@ public class Shape {
         return message;
     }
 
-
     public String getShape() {
         return shape;
-    }
-
-    public Font getFont() {
-        return font;
-    }
-
-    public int getFontSize() {
-        return fontSize;
     }
 
     public int getEraserSize() {

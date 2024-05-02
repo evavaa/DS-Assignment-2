@@ -1,9 +1,15 @@
 package Whiteboard;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.desktop.SystemEventListener;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 
 public class ManagerWhiteBoardGUI extends JFrame {
     private JPanel toolBar;
@@ -14,7 +20,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JLabel userListLabel;
     private JTextArea textArea1;
     private JLabel chatLabel;
-    private JTextArea textArea2;
+    private JTextArea chatArea;
     private JTextField chatInput;
     private JButton sendButton;
     private JPanel WhiteBoard;
@@ -22,6 +28,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JButton eraserButton;
     private JComboBox shapes;
     private JButton colorButton;
+    private JSpinner eraserSize;
 
     private JMenuBar menuBar;
     private JMenu menu;
@@ -31,6 +38,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem saveAsFile;
 
     private DrawBoard drawBoard = new DrawBoard();
+    private Cursor eraserCursor;
 
     public ManagerWhiteBoardGUI() {
         setContentPane(WhiteBoard);
@@ -39,6 +47,14 @@ public class ManagerWhiteBoardGUI extends JFrame {
         setSize(1000, 700);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // setup drawing board
+        drawPanel.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        drawPanel.add(drawBoard);
+        drawPanel.revalidate();
+
+        // setup toolbar
+        toolBar.setBorder(new TitledBorder(null, "Tools"));
 
         // setup menu bar
         menuBar = new JMenuBar();
@@ -55,14 +71,14 @@ public class ManagerWhiteBoardGUI extends JFrame {
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
-        // setup drawing board
-        drawPanel.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-        drawPanel.add(drawBoard);
-        drawPanel.revalidate();
+        try {
+            Image eraserIcon = ImageIO.read(new File("../icons/eraser.png"));
+            Cursor eraserCursor = Toolkit.getDefaultToolkit().createCustomCursor(eraserIcon, new Point(0, 0), "eraserCursor");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // setup toolbar
-        toolBar.setBorder(new TitledBorder(null, "Tools"));
-
+        createUIComponents();
         update();
     }
 
@@ -79,7 +95,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
         shapes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                drawBoard.setCurrentTool(shapes.getSelectedItem().toString());
+                drawBoard.setCurrentTool(shapes.getSelectedItem().toString().toLowerCase());
             }
         });
 
@@ -96,6 +112,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawBoard.setCurrentTool("eraser");
+                drawPanel.setCursor(eraserCursor);
                 //TODO: change the cursor to an eraser icon
             }
         });
@@ -113,6 +130,18 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("not yet");
+            }
+        });
+    }
+
+    private void createUIComponents() {
+        // setup eraser sizes
+        eraserSize = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
+        eraserSize.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSpinner eraserSize = (JSpinner) e.getSource();
+                drawBoard.setEraserSize((Integer) eraserSize.getValue());
             }
         });
     }
