@@ -83,12 +83,14 @@ public class DrawBoard extends JPanel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                x1 = e.getX();
-                y1 = e.getY();
-                String input = JOptionPane.showInputDialog(null,null,"Enter the text:",JOptionPane.PLAIN_MESSAGE);
-                if(input!=null) {
-                    shapes.add(new Shape(x1, y1, color,"text", input));
-                    repaint();
+                if (currentTool.equals("text")) {
+                    x1 = e.getX();
+                    y1 = e.getY();
+                    String input = JOptionPane.showInputDialog(null, null, "Enter the text:", JOptionPane.PLAIN_MESSAGE);
+                    if (input != null) {
+                        shapes.add(new Shape(x1, y1, color, "text", input));
+                        repaint();
+                    }
                 }
             }
 

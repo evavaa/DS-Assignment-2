@@ -1,15 +1,12 @@
 package Whiteboard;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.desktop.SystemEventListener;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+
 
 public class ManagerWhiteBoardGUI extends JFrame {
     private JPanel toolBar;
@@ -41,7 +38,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
 
     public ManagerWhiteBoardGUI() {
         setContentPane(WhiteBoard);
-        setTitle("Whiteboard");
+        setTitle("Manager Whiteboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
