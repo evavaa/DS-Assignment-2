@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="DS-Assignment-2" options="--add-modules java.desktop,java.base" />
+      <module name="DS-Assignment-2" options="--add-modules java.desktop,java.base,java.rmi" />
     </option>
   </component>
 </project>

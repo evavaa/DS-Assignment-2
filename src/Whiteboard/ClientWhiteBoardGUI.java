@@ -1,4 +1,4 @@
-package client;
+package Whiteboard;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class WhiteBoardGUI extends JFrame {
+public class ClientWhiteBoardGUI extends JFrame {
     private JPanel toolBar;
     private JButton freeDrawButton;
     private JPanel drawBoard;
@@ -28,7 +28,7 @@ public class WhiteBoardGUI extends JFrame {
     private Color color;
 
 
-    public WhiteBoardGUI() {
+    public ClientWhiteBoardGUI() {
         setContentPane(WhiteBoard);
         setTitle("Whiteboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,9 +58,5 @@ public class WhiteBoardGUI extends JFrame {
                 color = JColorChooser.showDialog(null, "Select a Colour", Color.black);
             }
         });
-    }
-
-    public static void main(String[] args) {
-        new WhiteBoardGUI();
     }
 }
