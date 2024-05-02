@@ -38,7 +38,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem saveAsFile;
 
     private DrawBoard drawBoard = new DrawBoard();
-    private Cursor eraserCursor;
 
     public ManagerWhiteBoardGUI() {
         setContentPane(WhiteBoard);
@@ -70,13 +69,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
         menu.add(saveAsFile);
         menuBar.add(menu);
         setJMenuBar(menuBar);
-
-        try {
-            Image eraserIcon = ImageIO.read(new File("../icons/eraser.png"));
-            Cursor eraserCursor = Toolkit.getDefaultToolkit().createCustomCursor(eraserIcon, new Point(0, 0), "eraserCursor");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         createUIComponents();
         update();
@@ -112,8 +104,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawBoard.setCurrentTool("eraser");
-                drawPanel.setCursor(eraserCursor);
-                //TODO: change the cursor to an eraser icon
             }
         });
 
