@@ -1,14 +1,22 @@
 package Whiteboard;
 
+import remote.IRemoteWhiteboard;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DrawBoard extends JPanel {
     // store shapes and texts on whiteboard as a list of shapes
-    public ArrayList<Shape> shapes = new ArrayList<>();
-    private ArrayList<Shape> draft = new ArrayList<>();
+    private ConcurrentHashMap<Integer, Shape> draft = new ConcurrentHashMap<>();
+
+    private IRemoteWhiteboard remoteWhiteboard;
 
     private int x1, x2, y1, y2;
     private String currentTool = "free draw";
@@ -17,29 +25,28 @@ public class DrawBoard extends JPanel {
     private final BasicStroke defaultStroke = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private final Font font = new Font("SANS_SERIF", Font.PLAIN, 16);
 
-    public void setCurrentTool(String currentTool) {
-        this.currentTool = currentTool;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public void setEraserSize(int eraserSize) {
-        this.eraserSize = eraserSize;
-    }
-
     public DrawBoard() {
         setBackground(Color.white);
         init();
+    }
+
+    public void setRemoteWhiteboard(IRemoteWhiteboard remoteWhiteboard) {
+        this.remoteWhiteboard = remoteWhiteboard;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        ConcurrentHashMap<Integer, Shape> shapes = null;
 
-        for(Shape s : shapes){
+        try {
+            shapes = remoteWhiteboard.getShapes();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        for(Shape s : shapes.values()){
             g2.setColor(s.getColor());
             g2.setStroke(defaultStroke);
             if (s.getShape().equals("line")){
@@ -88,7 +95,11 @@ public class DrawBoard extends JPanel {
                     y1 = e.getY();
                     String input = JOptionPane.showInputDialog(null, null, "Enter the text:", JOptionPane.PLAIN_MESSAGE);
                     if (input != null) {
-                        shapes.add(new Shape(x1, y1, color, "text", input));
+                        try {
+                            remoteWhiteboard.addShape(new Shape(x1, y1, color, "text", input));
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
                         repaint();
                     }
                 }
@@ -103,19 +114,31 @@ public class DrawBoard extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (currentTool.equals("line")) {
-                    shapes.add(new Shape(x1, y1, x2, y2, color, "line"));
+                    try {
+                        remoteWhiteboard.addShape(new Shape(x1, y1, x2, y2, color, "line"));
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     repaint();
                 }
                 // draw the circle given centre and radius
                 else if (currentTool.equals("circle")) {
                     int diameter = (int) Math.round(Math.hypot(x1-x2, y1-y2));
-                    shapes.add(new Shape(Math.min(x1, x2), Math.min(y1, y2), diameter, diameter, color, currentTool));
+                    try {
+                        remoteWhiteboard.addShape(new Shape(Math.min(x1, x2), Math.min(y1, y2), diameter, diameter, color, currentTool));
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     repaint();
                 }
                 else if (currentTool.equals("oval") || currentTool.equals("rectangle")) {
                     int width = Math.abs(x1 - x2);
                     int height = Math.abs(y1 - y2);
-                    shapes.add(new Shape(Math.min(x1, x2), Math.min(y1, y2), width, height, color, currentTool));
+                    try {
+                        remoteWhiteboard.addShape(new Shape(Math.min(x1, x2), Math.min(y1, y2), width, height, color, currentTool));
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     repaint();
                 }
             }
@@ -128,31 +151,52 @@ public class DrawBoard extends JPanel {
                 y2 = e.getY();
 
                 if (currentTool.equals("free draw")) {
-                    shapes.add(new Shape(x1, y1, x2, y2, color, "line"));
+                    try {
+                        remoteWhiteboard.addShape(new Shape(x1, y1, x2, y2, color, "line"));
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     repaint();
                     x1 = x2;
                     y1 = y2;
                 } else if (currentTool.equals("eraser")) {
-                    shapes.add(new Shape(x1, y1, x2, y2, Color.white, "eraser", eraserSize));
+                    try {
+                        remoteWhiteboard.addShape(new Shape(x1, y1, x2, y2, Color.white, "eraser", eraserSize));
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
                     repaint();
                     x1 = x2;
                     y1 = y2;
                 } else if (currentTool.equals("line")) {
-                    draft.add(new Shape(x1, y1, x2, y2, color, "line"));
+                    draft.put(draft.size(), new Shape(x1, y1, x2, y2, color, "line"));
                     repaint();
                 } else if (currentTool.equals("oval") || currentTool.equals("rectangle")) {
                     int width = Math.abs(x1 - x2);
                     int height = Math.abs(y1 - y2);
-                    draft.add(new Shape(Math.min(x1, x2), Math.min(y1, y2), width, height, color, currentTool));
+                    draft.put(draft.size(), new Shape(Math.min(x1, x2), Math.min(y1, y2), width, height, color, currentTool));
                     repaint();
                 } else if (currentTool.equals("circle")) {
                     int diameter = (int) Math.round(Math.hypot(x1-x2, y1-y2));
-                    draft.add(new Shape(Math.min(x1, x2), Math.min(y1, y2), diameter, diameter, color, currentTool));
+                    draft.put(draft.size(), new Shape(Math.min(x1, x2), Math.min(y1, y2), diameter, diameter, color, currentTool));
                     repaint();
                 }
             }
         });
     }
+
+    public void setCurrentTool(String currentTool) {
+        this.currentTool = currentTool;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setEraserSize(int eraserSize) {
+        this.eraserSize = eraserSize;
+    }
+
 
 
 }

@@ -1,8 +1,9 @@
 package Whiteboard;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Shape {
+public class Shape implements Serializable {
     private int x1;
     private int x2;
     private int y1;

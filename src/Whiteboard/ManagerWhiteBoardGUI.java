@@ -1,5 +1,7 @@
 package Whiteboard;
 
+import remote.IRemoteWhiteboard;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -36,7 +38,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
 
     private DrawBoard drawBoard = new DrawBoard();
 
-    public ManagerWhiteBoardGUI() {
+    public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
         setContentPane(WhiteBoard);
         setTitle("Manager Whiteboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,6 +47,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
         setVisible(true);
 
         // setup drawing board
+        drawBoard.setRemoteWhiteboard(remoteWhiteboard);
         drawPanel.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
         drawPanel.add(drawBoard);
         drawPanel.revalidate();
@@ -71,7 +74,18 @@ public class ManagerWhiteBoardGUI extends JFrame {
         update();
     }
 
+
     public void update() {
+        // add a listener to keep updating the whiteboard with other users
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    drawBoard.repaint();
+                }
+            }
+        });
+        t.start();
+
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {
             @Override
