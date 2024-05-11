@@ -28,13 +28,12 @@ public class Client extends UnicastRemoteObject implements IRemoteClient {
     }
 
     @Override
-    public String getUsername() throws RemoteException {
-        return username;
+    public void updateUsers(String[] usernames) {
+        clientGUI.updateUserList(usernames);
     }
 
     @Override
-    public ClientWhiteBoardGUI getGUI() throws RemoteException {
-        return clientGUI;
+    public String getUsername() throws RemoteException {
+        return username;
     }
-
 }

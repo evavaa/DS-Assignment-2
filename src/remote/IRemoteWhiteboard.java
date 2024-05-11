@@ -14,8 +14,6 @@ public interface IRemoteWhiteboard extends Remote {
 
     void addShape(Shape shape) throws RemoteException;
 
-    void updateWhiteboard() throws RemoteException;
-
     void setManager(IRemoteManager manager) throws RemoteException;
 
     void registerClient(IRemoteClient client) throws RemoteException;
@@ -24,6 +22,6 @@ public interface IRemoteWhiteboard extends Remote {
 
     void unregisterClient(IRemoteClient client) throws RemoteException;
 
-    void notifyClients() throws  RemoteException;
+    boolean hasManager() throws RemoteException;
 
 }

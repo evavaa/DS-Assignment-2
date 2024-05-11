@@ -35,29 +35,28 @@ public class WhiteboardServer {
             e.printStackTrace();
         }
 
-        try {
-            // create a server socket for client connection
-            ServerSocket server = new ServerSocket(port);
-            System.out.println("Waiting for client connection-");
-
-            // wait for connections
-            while (true) {
-                Socket client = server.accept();
-                System.out.println("New client applying for connection!");
-
-                // start a new thread for a connection
-                Thread t = new Thread(() -> serveClient(client));
-                t.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // create a server socket for client connection
+//            ServerSocket server = new ServerSocket(port);
+//            System.out.println("Waiting for client connection-");
+//
+//            // wait for connections
+//            while (true) {
+//                Socket client = server.accept();
+//                System.out.println("New client applying for connection!");
+//
+//                // start a new thread for a connection
+//                Thread t = new Thread(() -> serveClient(client));
+//                t.start();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
-    private static void serveClient(Socket client) {
-        // TODO: when a client draws something on the whiteboard, it sends a request to the server
-        // the server sends the repaint request to all client
-
-    }
+//    private static void serveClient(Socket client) {
+//
+//
+//    }
 }

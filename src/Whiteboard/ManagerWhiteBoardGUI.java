@@ -28,6 +28,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JButton colorButton;
     private JSpinner eraserSize;
     private JList userList;
+    private JButton kickoutButton;
 
     private JMenuBar menuBar;
     private JMenu menu;
@@ -44,7 +45,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
-        setVisible(true);
 
         // setup drawing board
         drawBoard.setRemoteWhiteboard(remoteWhiteboard);
@@ -72,10 +72,17 @@ public class ManagerWhiteBoardGUI extends JFrame {
 
         createUIComponents();
         update();
+
+        setVisible(true);
+
     }
 
     public DrawBoard getDrawBoard() {
         return drawBoard;
+    }
+
+    public void updateUserList(String[] usernames) {
+        userList.setListData(usernames);
     }
 
     public void update() {
@@ -116,6 +123,16 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawBoard.setColor(JColorChooser.showDialog(null, "Select a Colour", Color.black));
+            }
+        });
+
+        //TODO: kick out selected user
+        kickoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // get list selected item
+                // cannot select manager itself
+                // if clicked, show a confirm dialog to let the manager confirm whether he/she wants to kickout the selected user
             }
         });
 

@@ -3,6 +3,8 @@ package remote;
 import Whiteboard.Shape;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhiteboard {
@@ -19,6 +21,8 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public boolean isUniqueUsername(String key) throws RemoteException {
         if (clients.get(key) != null) {
+            return false;
+        } else if (key == manager.getUsername()) {
             return false;
         } else {
             return true;
@@ -49,18 +53,25 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
-    public void updateWhiteboard() throws RemoteException {
-
-    }
-
-    @Override
-    public void setManager(IRemoteManager manager) {
+    public void setManager(IRemoteManager manager) throws RemoteException {
         this.manager = manager;
+        List<String> usernames = new ArrayList<>();
+        usernames.add(manager.getUsername());
+        manager.updateUsers(usernames.toArray(new String[0]));
     }
 
     @Override
     public void registerClient(IRemoteClient client) throws RemoteException {
         clients.put(client.getUsername(), client);
+
+        // notify all clients and manager to update user list
+        List<String> usernames = new ArrayList<>(clients.keySet());
+        usernames.add(manager.getUsername());
+
+        for (IRemoteClient c : clients.values()) {
+            c.updateUsers(usernames.toArray(new String[0]));
+        }
+        manager.updateUsers(usernames.toArray(new String[0]));
     }
 
     @Override
@@ -69,9 +80,8 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
-    public void notifyClients() throws RemoteException {
-
+    public boolean hasManager() throws RemoteException {
+        return (manager != null);
     }
-
 
 }

@@ -7,6 +7,10 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IRemoteManager extends Remote {
-    ManagerWhiteBoardGUI getGUI() throws RemoteException;
+
     void updateBoard() throws RemoteException;
+
+    void updateUsers(String[] usernames) throws RemoteException;
+
+    String getUsername() throws RemoteException;
 }

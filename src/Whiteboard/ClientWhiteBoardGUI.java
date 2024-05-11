@@ -56,6 +56,10 @@ public class ClientWhiteBoardGUI extends JFrame {
         update();
     }
 
+    public void updateUserList(String[] usernames) {
+        userList.setListData(usernames);
+    }
+
     public void update() {
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {

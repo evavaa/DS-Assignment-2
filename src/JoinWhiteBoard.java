@@ -3,6 +3,10 @@ import client.Client;
 import remote.IRemoteWhiteboard;
 
 import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,6 +16,7 @@ public class JoinWhiteBoard {
     public static String username;
     private static String ip;
     private static int port;
+    private static IRemoteWhiteboard remoteWhiteboard;
 
     public static void main(String[] args) {
         try {
@@ -30,7 +35,13 @@ public class JoinWhiteBoard {
         try {
             Registry registry = LocateRegistry.getRegistry(ip, 1099);
             LocateRegistry.getRegistry(ip);
-            IRemoteWhiteboard remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
+            remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
+
+            // check if there exists a manager for the whiteboard
+            if (! remoteWhiteboard.hasManager()) {
+                JOptionPane.showMessageDialog(null, "There is no manager in this whiteboard.", "Server Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
 
             // check if the username is unique
             if (! remoteWhiteboard.isUniqueUsername(username)) {
@@ -38,12 +49,46 @@ public class JoinWhiteBoard {
                 System.exit(0);
             }
 
-            // initialise a client
-            ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard);
-            Client client = new Client(username, clientGUI, remoteWhiteboard);
+            // wait for manager's approval before joining the whiteboard
+            try {
+                Socket socket = new Socket(ip, port);
 
-            // register on the remoteWhiteboard
-            remoteWhiteboard.registerClient(client);
+                // get the input/output streams for reading/writing data from/to the socket
+                DataInputStream input = new DataInputStream(socket.getInputStream());
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+
+                // send message to server
+                output.writeUTF(username);
+                output.flush();
+                System.out.println("Message sent");
+                JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.", "Message", JOptionPane.INFORMATION_MESSAGE);
+
+                // receive response from server
+                String response = input.readUTF();
+                System.out.println("Response: " + response);
+
+                // if the manager refuses the client to join the whiteboard, exit
+                if (response.equals("no")) {
+                    int reply = JOptionPane.showConfirmDialog(null, "The manager refuses the connection. Do you want to exit the application?", "Request Declined",  JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                    System.exit(0);
+                } else if (response.equals("yes")) {
+                    System.out.println("Connect Successfully.");
+                    // initialise a client
+                    ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard);
+                    Client client = new Client(username, clientGUI, remoteWhiteboard);
+
+                    // register on the remoteWhiteboard
+                    remoteWhiteboard.registerClient(client);
+                }
+                output.close();
+                input.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         } catch (RemoteException e) {
             e.printStackTrace();

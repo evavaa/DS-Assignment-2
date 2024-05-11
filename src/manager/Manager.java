@@ -26,13 +26,13 @@ public class Manager extends UnicastRemoteObject implements IRemoteManager {
     }
 
     @Override
-    public void updateBoard() {
-        drawBoard.repaint();
+    public void updateUsers(String[] usernames) {
+        managerGUI.updateUserList(usernames);
     }
 
     @Override
-    public ManagerWhiteBoardGUI getGUI() {
-        return managerGUI;
+    public void updateBoard() {
+        drawBoard.repaint();
     }
 
 }

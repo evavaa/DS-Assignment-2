@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 public interface IRemoteClient extends Remote {
     String getUsername() throws RemoteException;
 
-    ClientWhiteBoardGUI getGUI() throws RemoteException;
-
     void updateBoard() throws RemoteException;
+
+    void updateUsers(String[] usernames) throws RemoteException;
 }
