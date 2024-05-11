@@ -16,6 +16,15 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     public RemoteWhiteboard() throws RemoteException {
     }
 
+    @Override
+    public boolean isUniqueUsername(String key) throws RemoteException {
+        if (clients.get(key) != null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Get all drawings on the whiteboard.
      * @throws RemoteException

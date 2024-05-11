@@ -27,18 +27,22 @@ public class JoinWhiteBoard {
             username = "user1";
         }
 
-        //TODO: check if the username is unique
-
         try {
             Registry registry = LocateRegistry.getRegistry(ip, 1099);
             LocateRegistry.getRegistry(ip);
             IRemoteWhiteboard remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
 
+            // check if the username is unique
+            if (! remoteWhiteboard.isUniqueUsername(username)) {
+                JOptionPane.showMessageDialog(null, "Username exists! Please enter a new username.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+
             // initialise a client
             ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard);
             Client client = new Client(username, clientGUI, remoteWhiteboard);
 
-            //TODO: register on the remoteWhiteboard
+            // register on the remoteWhiteboard
             remoteWhiteboard.registerClient(client);
 
         } catch (RemoteException e) {

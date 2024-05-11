@@ -41,7 +41,7 @@ public class CreateWhiteBoard {
             ManagerWhiteBoardGUI managerGUI = new ManagerWhiteBoardGUI(remoteWhiteboard);
             Manager manager = new Manager(username, managerGUI, remoteWhiteboard);
 
-            //TODO: register on the remoteWhiteboard
+            // register on the remoteWhiteboard
             remoteWhiteboard.setManager(manager);
 
         } catch (RemoteException e) {

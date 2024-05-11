@@ -20,6 +20,8 @@ public interface IRemoteWhiteboard extends Remote {
 
     void registerClient(IRemoteClient client) throws RemoteException;
 
+    boolean isUniqueUsername(String key) throws RemoteException;
+
     void unregisterClient(IRemoteClient client) throws RemoteException;
 
     void notifyClients() throws  RemoteException;

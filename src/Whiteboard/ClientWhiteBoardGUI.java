@@ -14,10 +14,9 @@ public class ClientWhiteBoardGUI extends JFrame {
     private JPanel toolBar;
     private JButton freeDrawButton;
     private JPanel drawPanel;
-    private JPanel userList;
+    private JPanel userListPanel;
     private JPanel chatBox;
     private JLabel userListLabel;
-    private JTextArea textArea1;
     private JLabel chatLabel;
     private JTextArea chatArea;
     private JTextField chatInput;
@@ -28,6 +27,7 @@ public class ClientWhiteBoardGUI extends JFrame {
     private JComboBox shapes;
     private JButton colorButton;
     private JSpinner eraserSize;
+    private JList userList;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
@@ -57,19 +57,6 @@ public class ClientWhiteBoardGUI extends JFrame {
     }
 
     public void update() {
-        // add a listener to keep updating the whiteboard with other users
-//        Thread t = new Thread(new Runnable() {
-//            public void run() {
-//                //TODO: need to debug, change condition to repaint only when there is change in remoteWhiteboard.shapes
-//                // or refer to RMI transfer file code, when a client add a shape, it will notify the server
-//                // the server then notify all clients to repaint
-//                while (true) {
-//                    drawBoard.repaint();
-//                }
-//            }
-//        });
-//        t.start();
-
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {
             @Override
