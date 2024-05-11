@@ -36,7 +36,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem saveFile;
     private JMenuItem saveAsFile;
 
-    private DrawBoard drawBoard = new DrawBoard();
+    private transient DrawBoard drawBoard = new DrawBoard();
 
     public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
         setContentPane(WhiteBoard);
@@ -74,17 +74,20 @@ public class ManagerWhiteBoardGUI extends JFrame {
         update();
     }
 
+    public DrawBoard getDrawBoard() {
+        return drawBoard;
+    }
 
     public void update() {
         // add a listener to keep updating the whiteboard with other users
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    drawBoard.repaint();
-                }
-            }
-        });
-        t.start();
+//        Thread t = new Thread(new Runnable() {
+//            public void run() {
+//                while (true) {
+//                    drawBoard.repaint();
+//                }
+//            }
+//        });
+//        t.start();
 
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {

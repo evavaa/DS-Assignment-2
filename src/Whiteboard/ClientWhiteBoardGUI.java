@@ -29,7 +29,11 @@ public class ClientWhiteBoardGUI extends JFrame {
     private JButton colorButton;
     private JSpinner eraserSize;
 
-    private DrawBoard drawBoard = new DrawBoard();
+    private transient DrawBoard drawBoard = new DrawBoard();
+
+    public DrawBoard getDrawBoard() {
+        return drawBoard;
+    }
 
     public ClientWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
         setContentPane(WhiteBoard);
@@ -54,14 +58,17 @@ public class ClientWhiteBoardGUI extends JFrame {
 
     public void update() {
         // add a listener to keep updating the whiteboard with other users
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    drawBoard.repaint();
-                }
-            }
-        });
-        t.start();
+//        Thread t = new Thread(new Runnable() {
+//            public void run() {
+//                //TODO: need to debug, change condition to repaint only when there is change in remoteWhiteboard.shapes
+//                // or refer to RMI transfer file code, when a client add a shape, it will notify the server
+//                // the server then notify all clients to repaint
+//                while (true) {
+//                    drawBoard.repaint();
+//                }
+//            }
+//        });
+//        t.start();
 
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {

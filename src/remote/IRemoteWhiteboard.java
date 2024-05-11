@@ -1,6 +1,8 @@
 package remote;
 
 import Whiteboard.Shape;
+import client.Client;
+import manager.Manager;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,7 +14,14 @@ public interface IRemoteWhiteboard extends Remote {
 
     void addShape(Shape shape) throws RemoteException;
 
-
     void updateWhiteboard() throws RemoteException;
+
+    void setManager(IRemoteManager manager) throws RemoteException;
+
+    void registerClient(IRemoteClient client) throws RemoteException;
+
+    void unregisterClient(IRemoteClient client) throws RemoteException;
+
+    void notifyClients() throws  RemoteException;
 
 }

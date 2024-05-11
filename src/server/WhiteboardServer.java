@@ -56,6 +56,8 @@ public class WhiteboardServer {
 
 
     private static void serveClient(Socket client) {
+        // TODO: when a client draws something on the whiteboard, it sends a request to the server
+        // the server sends the repaint request to all client
 
     }
 }
