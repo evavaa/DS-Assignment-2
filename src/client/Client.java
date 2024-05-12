@@ -42,7 +42,12 @@ public class Client extends UnicastRemoteObject implements IRemoteClient {
     @Override
     public void disconnect() throws RemoteException {
         JOptionPane.showMessageDialog(null, "The manager has closed the whiteboard. The application will terminate soon.", "Warning Message",  JOptionPane.OK_OPTION);
-        remoteWhiteboard.unregisterClient(username);
-        System.exit(0);
+        clientGUI.dispose();
+    }
+
+    @Override
+    public void beKickedOut() throws RemoteException {
+        JOptionPane.showMessageDialog(null, "Sorry, you have been kicked out by the manager.", "Warning Message",  JOptionPane.OK_OPTION);
+        clientGUI.dispose();
     }
 }

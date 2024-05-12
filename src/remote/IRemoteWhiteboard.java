@@ -27,4 +27,6 @@ public interface IRemoteWhiteboard extends Remote {
     void notifyAppTerminate() throws RemoteException;
 
     void clear() throws RemoteException;
+
+    void kickOut(String username) throws RemoteException;
 }

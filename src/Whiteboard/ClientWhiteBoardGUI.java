@@ -60,6 +60,11 @@ public class ClientWhiteBoardGUI extends JFrame {
                     System.exit(0);
                 }
             }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                    System.exit(0);
+            }
         });
 
         // setup drawing board

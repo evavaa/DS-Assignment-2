@@ -45,7 +45,7 @@ public class CreateWhiteBoard {
             remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
 
             // initialise a manager
-            ManagerWhiteBoardGUI managerGUI = new ManagerWhiteBoardGUI(remoteWhiteboard);
+            ManagerWhiteBoardGUI managerGUI = new ManagerWhiteBoardGUI(remoteWhiteboard, username);
             Manager manager = new Manager(username, managerGUI, remoteWhiteboard);
 
             // register on the remoteWhiteboard

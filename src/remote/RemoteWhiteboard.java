@@ -87,8 +87,16 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     public void notifyAppTerminate() throws RemoteException {
         // notify all clients that the manager has closed the application
         for (IRemoteClient c : clients.values()) {
+            System.out.println("disconnect client: " + c.getUsername());
             c.disconnect();
         }
+    }
+
+    public void kickOut(String username) throws RemoteException {
+        IRemoteClient client = clients.get(username);
+        System.out.println("kick out client: " + username);
+        client.beKickedOut();
+        unregisterClient(username);
     }
 
     @Override
@@ -99,6 +107,8 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public void clear() throws RemoteException {
         shapes.clear();
+        clients.clear();
+        manager = null;
     }
 
 }

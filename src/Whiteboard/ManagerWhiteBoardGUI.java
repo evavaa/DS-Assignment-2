@@ -9,6 +9,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.rmi.RemoteException;
+import java.util.stream.StreamSupport;
 
 
 public class ManagerWhiteBoardGUI extends JFrame {
@@ -37,12 +38,15 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem openFile;
     private JMenuItem saveFile;
     private JMenuItem saveAsFile;
+    private JMenuItem closeFile;
     private IRemoteWhiteboard remoteWhiteboard;
+    private String username;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
-    public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
+    public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard, String username) {
         this.remoteWhiteboard = remoteWhiteboard;
+        this.username = username;
         setContentPane(WhiteBoard);
         setTitle("Manager Whiteboard");
         setSize(1000, 700);
@@ -57,10 +61,9 @@ public class ManagerWhiteBoardGUI extends JFrame {
                     // close the GUI
                     setVisible(false);
                     try {
+                        remoteWhiteboard.notifyAppTerminate();
                         // clear all drawings
                         remoteWhiteboard.clear();
-                        // notify all clients
-                        remoteWhiteboard.notifyAppTerminate();
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -86,10 +89,12 @@ public class ManagerWhiteBoardGUI extends JFrame {
         openFile = new JMenuItem("Open");
         saveFile = new JMenuItem("Save");
         saveAsFile = new JMenuItem("Save As");
+        closeFile = new JMenuItem("Close");
         menu.add(newFile);
         menu.add(openFile);
         menu.add(saveFile);
         menu.add(saveAsFile);
+        menu.add(closeFile);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
@@ -149,13 +154,26 @@ public class ManagerWhiteBoardGUI extends JFrame {
             }
         });
 
-        //TODO: kick out selected user
+        // kick out selected user
         kickoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // get list selected item
-                // cannot select manager itself
-                // if clicked, show a confirm dialog to let the manager confirm whether he/she wants to kickout the selected user
+                // get selected username
+                String selected = userList.getSelectedValue().toString();
+                // cannot select manager him/herself
+                if (! selected.equals(username)) {
+                    // let the manager confirm whether he/she wants to kick out the selected user
+                    String message = "Do you want to kick out this user: " + selected + "?";
+                    int reply = JOptionPane.showConfirmDialog(null, message, "Warning Message", JOptionPane.YES_NO_OPTION);
+                    if (reply == JOptionPane.YES_OPTION) {
+                        // remove the selected user
+                        try {
+                            remoteWhiteboard.kickOut(selected);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
             }
         });
 
@@ -164,8 +182,47 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("not yet");
+
             }
         });
+
+        // open file
+        openFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("not yet");
+
+            }
+        });
+
+        // save file
+        saveFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("not yet");
+
+            }
+        });
+
+        // save file as...
+        saveAsFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("not yet");
+
+            }
+        });
+
+        // close application
+        // new file
+        closeFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("not yet");
+
+            }
+        });
+
     }
 
     private void createUIComponents() {

@@ -70,10 +70,7 @@ public class JoinWhiteBoard {
 
                 // if the manager refuses the client to join the whiteboard, exit
                 if (response.equals("no")) {
-                    int reply = JOptionPane.showConfirmDialog(null, "The manager refuses the connection. Do you want to exit the application?", "Request Declined",  JOptionPane.YES_NO_OPTION);
-                    if (reply == JOptionPane.YES_OPTION) {
-                        System.exit(0);
-                    }
+                    JOptionPane.showMessageDialog(null, "The manager refuses the connection.", "Request Declined",  JOptionPane.OK_OPTION);
                     System.exit(0);
                 }
                 // approval received from the manager
