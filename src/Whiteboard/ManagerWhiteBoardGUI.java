@@ -8,6 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
 
 
 public class ManagerWhiteBoardGUI extends JFrame {
@@ -36,15 +37,37 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem openFile;
     private JMenuItem saveFile;
     private JMenuItem saveAsFile;
+    private IRemoteWhiteboard remoteWhiteboard;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
     public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
+        this.remoteWhiteboard = remoteWhiteboard;
         setContentPane(WhiteBoard);
         setTitle("Manager Whiteboard");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
+
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        // when the manager chooses to quit, close the application and notify all clients
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(JOptionPane.showConfirmDialog(null, "Do you want to close the whiteboard? All drawings on the whiteboard will be cleared.", "Message", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    // close the GUI
+                    setVisible(false);
+                    try {
+                        // clear all drawings
+                        remoteWhiteboard.clear();
+                        // notify all clients
+                        remoteWhiteboard.notifyAppTerminate();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
 
         // setup drawing board
         drawBoard.setRemoteWhiteboard(remoteWhiteboard);

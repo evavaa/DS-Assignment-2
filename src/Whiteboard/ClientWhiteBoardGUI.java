@@ -8,6 +8,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
 
 
 public class ClientWhiteBoardGUI extends JFrame {
@@ -30,18 +31,36 @@ public class ClientWhiteBoardGUI extends JFrame {
     private JList userList;
 
     private transient DrawBoard drawBoard = new DrawBoard();
+    private IRemoteWhiteboard remoteWhiteboard;
+    private String username;
 
     public DrawBoard getDrawBoard() {
         return drawBoard;
     }
 
-    public ClientWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard) {
+    public ClientWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard, String username) {
+        this.remoteWhiteboard = remoteWhiteboard;
+        this.username = username;
         setContentPane(WhiteBoard);
         setTitle("Client Whiteboard");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
-        setVisible(true);
+
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        // when the client chooses to quit, unregister the client from the remote server
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(JOptionPane.showConfirmDialog(null, "Do you want to leave the whiteboard?", "Message", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    try {
+                        remoteWhiteboard.unregisterClient(username);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
+            }
+        });
 
         // setup drawing board
         drawBoard.setRemoteWhiteboard(remoteWhiteboard);
@@ -54,6 +73,7 @@ public class ClientWhiteBoardGUI extends JFrame {
 
         createUIComponents();
         update();
+        setVisible(true);
     }
 
     public void updateUserList(String[] usernames) {
@@ -113,4 +133,6 @@ public class ClientWhiteBoardGUI extends JFrame {
             }
         });
     }
+
+
 }

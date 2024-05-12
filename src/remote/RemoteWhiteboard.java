@@ -63,7 +63,16 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public void registerClient(IRemoteClient client) throws RemoteException {
         clients.put(client.getUsername(), client);
+        updateUserList();
+    }
 
+    @Override
+    public void unregisterClient(String username) throws RemoteException {
+        clients.remove(username);
+        updateUserList();
+    }
+
+    private void updateUserList() throws RemoteException {
         // notify all clients and manager to update user list
         List<String> usernames = new ArrayList<>(clients.keySet());
         usernames.add(manager.getUsername());
@@ -75,13 +84,21 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
-    public void unregisterClient(IRemoteClient client) throws RemoteException {
-        clients.remove(client.getUsername());
+    public void notifyAppTerminate() throws RemoteException {
+        // notify all clients that the manager has closed the application
+        for (IRemoteClient c : clients.values()) {
+            c.disconnect();
+        }
     }
 
     @Override
     public boolean hasManager() throws RemoteException {
         return (manager != null);
+    }
+
+    @Override
+    public void clear() throws RemoteException {
+        shapes.clear();
     }
 
 }

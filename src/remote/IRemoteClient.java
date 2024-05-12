@@ -11,4 +11,6 @@ public interface IRemoteClient extends Remote {
     void updateBoard() throws RemoteException;
 
     void updateUsers(String[] usernames) throws RemoteException;
+
+    void disconnect() throws RemoteException;
 }

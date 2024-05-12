@@ -51,6 +51,8 @@ public class JoinWhiteBoard {
 
             // wait for manager's approval before joining the whiteboard
             try {
+                JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.", "Message", JOptionPane.INFORMATION_MESSAGE);
+
                 Socket socket = new Socket(ip, port);
 
                 // get the input/output streams for reading/writing data from/to the socket
@@ -61,7 +63,6 @@ public class JoinWhiteBoard {
                 output.writeUTF(username);
                 output.flush();
                 System.out.println("Message sent");
-                JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.", "Message", JOptionPane.INFORMATION_MESSAGE);
 
                 // receive response from server
                 String response = input.readUTF();
@@ -74,10 +75,12 @@ public class JoinWhiteBoard {
                         System.exit(0);
                     }
                     System.exit(0);
-                } else if (response.equals("yes")) {
+                }
+                // approval received from the manager
+                else if (response.equals("yes")) {
                     System.out.println("Connect Successfully.");
                     // initialise a client
-                    ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard);
+                    ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard, username);
                     Client client = new Client(username, clientGUI, remoteWhiteboard);
 
                     // register on the remoteWhiteboard
