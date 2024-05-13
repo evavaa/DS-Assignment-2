@@ -1,7 +1,5 @@
 package server;
 
-import Whiteboard.ChatClient;
-import Whiteboard.ClientWhiteBoardGUI;
 import client.Client;
 import org.json.JSONObject;
 import remote.IRemoteWhiteboard;
@@ -11,8 +9,6 @@ import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

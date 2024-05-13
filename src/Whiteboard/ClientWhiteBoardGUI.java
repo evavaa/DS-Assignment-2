@@ -36,7 +36,6 @@ public class ClientWhiteBoardGUI extends JFrame {
 
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
-    //private ChatClient chatClient;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 

@@ -41,7 +41,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem closeFile;
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
-    //private ChatClient chatClient;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 

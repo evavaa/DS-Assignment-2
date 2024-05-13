@@ -1,13 +1,8 @@
-import Whiteboard.ChatClient;
 import Whiteboard.ClientWhiteBoardGUI;
 import client.Client;
 import remote.IRemoteWhiteboard;
 
 import javax.swing.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -64,8 +59,6 @@ public class JoinWhiteBoard {
             // register on the remoteWhiteboard
             remoteWhiteboard.registerClient(client);
 
-            //startConnection(ip, port);
-
         } catch (RemoteException e) {
             e.printStackTrace();
             JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your server.", "Error", JOptionPane.WARNING_MESSAGE);
@@ -73,14 +66,5 @@ public class JoinWhiteBoard {
             e.printStackTrace();
             JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your input.", "Error", JOptionPane.WARNING_MESSAGE);
         }
-
     }
-
-//    public static void startConnection(String ip, int port) {
-//        try {
-//            Socket socket = new Socket(ip, port);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
