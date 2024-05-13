@@ -30,6 +30,12 @@ public class Client extends UnicastRemoteObject implements IRemoteClient {
     }
 
     @Override
+    public void updateChatHistory(String send_username, String message) {
+        String newMessage = send_username + ": " + message + "\n";
+        clientGUI.updateChatHistory(newMessage);
+    }
+
+    @Override
     public void updateUsers(String[] usernames) {
         clientGUI.updateUserList(usernames);
     }

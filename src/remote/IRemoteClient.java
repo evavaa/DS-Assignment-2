@@ -15,4 +15,6 @@ public interface IRemoteClient extends Remote {
     void disconnect() throws RemoteException;
 
     void beKickedOut() throws RemoteException;
+
+    void updateChatHistory(String send_username, String message) throws RemoteException;
 }

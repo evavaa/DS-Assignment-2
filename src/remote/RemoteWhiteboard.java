@@ -43,7 +43,6 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
 
     @Override
     public void addShape(Shape shape) throws RemoteException {
-        System.out.println("add new shapes on the whiteboard");
         shapes.put(shapes.size(), shape);
 
         // notify all clients to repaint
@@ -53,6 +52,14 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
 
         // notify manager to repaint
         manager.updateBoard();
+    }
+
+    @Override
+    public void updateChat(String username, String message) throws RemoteException {
+        for (IRemoteClient c : clients.values()) {
+            c.updateChatHistory(username, message);
+        }
+        manager.updateChatHistory(username, message);
     }
 
     @Override

@@ -36,14 +36,13 @@ public class ClientWhiteBoardGUI extends JFrame {
 
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
-    private ChatClient chatClient;
+    //private ChatClient chatClient;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
     public ClientWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard, String username) {
         this.remoteWhiteboard = remoteWhiteboard;
         this.username = username;
-        this.chatClient = chatClient;
         setContentPane(WhiteBoard);
         setTitle("Client Whiteboard");
         setSize(1000, 700);
@@ -86,6 +85,10 @@ public class ClientWhiteBoardGUI extends JFrame {
 
     public void updateUserList(String[] usernames) {
         userList.setListData(usernames);
+    }
+
+    public void updateChatHistory(String message) {
+        chatArea.append(message);
     }
 
     public DrawBoard getDrawBoard() {
@@ -138,7 +141,11 @@ public class ClientWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String message = chatInput.getText();
-                chatClient.sendRequest(message);
+                try {
+                    remoteWhiteboard.updateChat(username, message);
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }

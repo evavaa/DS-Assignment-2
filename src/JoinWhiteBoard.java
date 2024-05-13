@@ -64,7 +64,7 @@ public class JoinWhiteBoard {
             // register on the remoteWhiteboard
             remoteWhiteboard.registerClient(client);
 
-            startConnection(ip, port);
+            //startConnection(ip, port);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -76,11 +76,11 @@ public class JoinWhiteBoard {
 
     }
 
-    public static void startConnection(String ip, int port) {
-        try {
-            Socket socket = new Socket(ip, port);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void startConnection(String ip, int port) {
+//        try {
+//            Socket socket = new Socket(ip, port);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

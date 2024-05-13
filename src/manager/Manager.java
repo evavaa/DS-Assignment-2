@@ -38,6 +38,12 @@ public class Manager extends UnicastRemoteObject implements IRemoteManager {
     }
 
     @Override
+    public void updateChatHistory(String send_username, String message) {
+        String newMessage = send_username + ": " + message + "\n";
+        managerGUI.updateChatHistory(newMessage);
+    }
+
+    @Override
     public boolean getApproval(String username) {
         String message = "Allow " + username  + " to share your whiteboard?";
         int reply = JOptionPane.showConfirmDialog(null, message, "Message",  JOptionPane.YES_NO_OPTION);

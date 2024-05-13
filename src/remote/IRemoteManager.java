@@ -15,4 +15,6 @@ public interface IRemoteManager extends Remote {
     String getUsername() throws RemoteException;
 
     boolean getApproval(String username) throws RemoteException;
+
+    void updateChatHistory(String send_username, String message) throws RemoteException;
 }

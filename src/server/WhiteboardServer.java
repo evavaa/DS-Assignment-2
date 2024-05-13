@@ -44,23 +44,23 @@ public class WhiteboardServer {
             e.printStackTrace();
         }
 
-        try {
-            // create a server socket for client communication
-            ServerSocket server = new ServerSocket(port);
-            System.out.println("Waiting for client connection-");
-
-            // wait for connections
-            while (true) {
-                Socket client = server.accept();
-                System.out.println("New client applying for connection!");
-
-                // start a new thread for a connection
-                Thread t = new Thread(() -> serveClient(client));
-                t.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // create a server socket for client communication
+//            ServerSocket server = new ServerSocket(port);
+//            System.out.println("Waiting for client connection-");
+//
+//            // wait for connections
+//            while (true) {
+//                Socket client = server.accept();
+//                System.out.println("New client applying for connection!");
+//
+//                // start a new thread for a connection
+//                Thread t = new Thread(() -> serveClient(client));
+//                t.start();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static void serveClient(Socket client) {

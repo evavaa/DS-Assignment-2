@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="json-20231013-sources">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Assignment 1/json-20231013.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Assignment 1/json-simple-1.1.1.wso2v2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../Assignment 1/json-20231013-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
