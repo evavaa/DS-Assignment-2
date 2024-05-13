@@ -1,15 +1,10 @@
 package Whiteboard;
 
 import remote.IRemoteWhiteboard;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DrawBoard extends JPanel {

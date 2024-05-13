@@ -1,7 +1,5 @@
 package remote;
 
-import Whiteboard.ClientWhiteBoardGUI;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

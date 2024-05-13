@@ -1,9 +1,6 @@
 package remote;
 
-import Whiteboard.ClientWhiteBoardGUI;
 import Whiteboard.Shape;
-
-import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;

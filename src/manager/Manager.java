@@ -4,8 +4,6 @@ import Whiteboard.DrawBoard;
 import Whiteboard.ManagerWhiteBoardGUI;
 import remote.IRemoteManager;
 import remote.IRemoteWhiteboard;
-
-import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
