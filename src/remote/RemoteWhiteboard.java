@@ -39,6 +39,18 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
+    public void setShapes(ConcurrentHashMap<Integer, Shape> shapes) throws RemoteException {
+        this.shapes = shapes;
+        // notify all clients to repaint
+        for (IRemoteClient c : clients.values()) {
+            c.updateBoard();
+        }
+
+        // notify manager to repaint
+        manager.updateBoard();
+    }
+
+    @Override
     public void addShape(Shape shape) throws RemoteException {
         shapes.put(shapes.size(), shape);
 
@@ -62,9 +74,6 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public void setManager(IRemoteManager manager) throws RemoteException {
         this.manager = manager;
-        List<String> usernames = new ArrayList<>();
-        usernames.add(manager.getUsername());
-        manager.updateUsers(usernames.toArray(new String[0]));
     }
 
     @Override
@@ -115,7 +124,7 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     public void clear() throws RemoteException {
         shapes.clear();
         clients.clear();
-        manager = null;
+        manager.updateBoard();
     }
 
 }

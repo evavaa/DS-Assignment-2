@@ -1,14 +1,20 @@
 package Whiteboard;
 
+import remote.IRemoteClient;
 import remote.IRemoteWhiteboard;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.rmi.RemoteException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ManagerWhiteBoardGUI extends JFrame {
     private JPanel toolBar;
@@ -39,6 +45,8 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem closeFile;
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
+    private JFileChooser fileChooser;
+    private File file;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
@@ -62,6 +70,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
                         remoteWhiteboard.notifyAppTerminate();
                         // clear all drawings
                         remoteWhiteboard.clear();
+                        remoteWhiteboard.setManager(null);
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
                     }
@@ -195,8 +204,21 @@ public class ManagerWhiteBoardGUI extends JFrame {
         newFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("not yet");
-
+                // remind the user to manually save current whiteboard
+                int reply = JOptionPane.showConfirmDialog(null, "The changes on current whiteboard will not be saved automatically. \n" +
+                        "Please save the whiteboard manually before opening a new whiteboard.\n" +
+                        "Are you sure that you want to create a new whiteboar? \n", "Warning Message", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION) {
+                    // create a blank whiteboard (clear drawings on current whiteboard)
+                    try {
+                        // notify clients the closure of current whiteboard
+                        // clients on current whiteboard do not have access to the new whiteboard
+                        remoteWhiteboard.notifyAppTerminate();
+                        remoteWhiteboard.clear();
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -204,10 +226,34 @@ public class ManagerWhiteBoardGUI extends JFrame {
         openFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("not yet");
-                JFileChooser fileChooser = new JFileChooser();
-                int i = fileChooser.showOpenDialog(null);
+                JFileChooser openFileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("TXT", "txt");
+                openFileChooser.setFileFilter(filter);
 
+                int reply = openFileChooser.showOpenDialog(openFileChooser);
+                if (reply == JFileChooser.APPROVE_OPTION) {
+                    // check if the selected file is a txt file
+                    file = openFileChooser.getSelectedFile();
+                    try {
+                        FileInputStream fileInput = new FileInputStream(file);
+                        ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+                        ConcurrentHashMap<Integer, Shape> shapes = (ConcurrentHashMap<Integer, Shape>)objectInput.readObject();
+
+                        // upload shapes to remote whiteboard
+                        remoteWhiteboard.setShapes(shapes);
+                        System.out.println("shapes reset");
+                        objectInput.close();
+                        fileInput.close();
+                    } catch (FileNotFoundException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Invalid Whiteboard file. Please try another file.", "Error", JOptionPane.OK_OPTION);
+                        System.out.println("Invalid Whiteboard file.");
+                        ex.printStackTrace();
+                    } catch (ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -215,27 +261,61 @@ public class ManagerWhiteBoardGUI extends JFrame {
         saveFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("not yet");
-
+                // save the whiteboard for the first time, then invoke the saveAs method
+                if (file == null) {
+                    saveAs();
+                } else {
+                    String fileName = file.getAbsolutePath().toLowerCase();
+                    // if the file saved last time is a txt file, then automatically save to the same file again
+                    if (fileName.endsWith(".txt")) {
+                        try {
+                            FileOutputStream fileOutput = new FileOutputStream(file);
+                            ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+                            objectOutput.writeObject(remoteWhiteboard.getShapes());
+                            objectOutput.flush();
+                            objectOutput.close();
+                            objectOutput.close();
+                        } catch (FileNotFoundException ex) {
+                            ex.printStackTrace();
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    // if the file saved last time is not a txt file, then invoke the saveAs method again
+                    else {
+                        saveAs();
+                    }
+                }
             }
         });
 
-        // save file as...
+        // save file as image or a txt file that can be loaded later
         saveAsFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("not yet");
-
+                saveAs();
             }
         });
 
         // close application
-        // new file
         closeFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("not yet");
-
+                if(JOptionPane.showConfirmDialog(null, "Do you want to close the whiteboard? All drawings on the whiteboard will be cleared.", "Message", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    // close the GUI
+                    setVisible(false);
+                    try {
+                        remoteWhiteboard.notifyAppTerminate();
+                        // clear all drawings
+                        remoteWhiteboard.clear();
+                        remoteWhiteboard.setManager(null);
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                    }
+                    System.exit(0);
+                }
             }
         });
 
@@ -251,5 +331,57 @@ public class ManagerWhiteBoardGUI extends JFrame {
                 drawBoard.setEraserSize((Integer) eraserSize.getValue());
             }
         });
+    }
+
+    private JFileChooser getFileChooser() {
+        if (fileChooser == null) {
+            fileChooser = new JFileChooser();
+            FileNameExtensionFilter png = new FileNameExtensionFilter("PNG", "png");
+            FileNameExtensionFilter jpg = new FileNameExtensionFilter("JPG", "jpg");
+            FileNameExtensionFilter txt = new FileNameExtensionFilter("TXT", "txt");
+            fileChooser.addChoosableFileFilter(png);
+            fileChooser.addChoosableFileFilter(jpg);
+            fileChooser.addChoosableFileFilter(txt);
+            fileChooser.setFileFilter(txt);
+            fileChooser.setAcceptAllFileFilterUsed(false);
+        }
+        return fileChooser;
+    }
+
+    private void saveAs() {
+        // let the user choose the file format
+        fileChooser = getFileChooser();
+        int reply = fileChooser.showSaveDialog(fileChooser);
+        if (reply == JFileChooser.APPROVE_OPTION) {
+            file = fileChooser.getSelectedFile();
+            String extension = fileChooser.getFileFilter().getDescription().toLowerCase();
+            String fileName = file.getAbsolutePath().toLowerCase();
+
+            // check if the user enters the file extension
+            if (!(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".txt"))) {
+                String filePath = file.getAbsolutePath() + "." + extension;
+                file = new File(filePath);
+                fileName = file.getAbsolutePath().toLowerCase();
+            }
+            // save to specified file
+            try {
+                if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+                    BufferedImage image = new BufferedImage(drawBoard.getWidth(), drawBoard.getHeight(), BufferedImage.TYPE_INT_RGB);
+                    Graphics g = image.getGraphics();
+                    drawBoard.printAll(g);
+                    ImageIO.write(image, extension, file);
+                } else if (fileName.endsWith(".txt")) {
+                    FileOutputStream fileOutput = new FileOutputStream(file);
+                    ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+                    objectOutput.writeObject(remoteWhiteboard.getShapes());
+                    objectOutput.flush();
+                    objectOutput.close();
+                    objectOutput.close();
+                }
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }

@@ -12,6 +12,8 @@ public interface IRemoteWhiteboard extends Remote {
 
     ConcurrentHashMap<Integer, Shape> getShapes() throws RemoteException;
 
+    void setShapes(ConcurrentHashMap<Integer, Shape> shapes) throws RemoteException;
+
     void addShape(Shape shape) throws RemoteException;
 
     void setManager(IRemoteManager manager) throws RemoteException;
@@ -29,8 +31,6 @@ public interface IRemoteWhiteboard extends Remote {
     void clear() throws RemoteException;
 
     void kickOut(String username) throws RemoteException;
-
-//    boolean getApproval(String username) throws RemoteException;
 
     void updateChat(String username, String message) throws RemoteException;
 }
