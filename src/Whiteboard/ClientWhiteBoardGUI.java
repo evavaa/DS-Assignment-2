@@ -8,6 +8,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.rmi.RemoteException;
 
 
@@ -30,17 +34,16 @@ public class ClientWhiteBoardGUI extends JFrame {
     private JSpinner eraserSize;
     private JList userList;
 
-    private transient DrawBoard drawBoard = new DrawBoard();
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
+    private ChatClient chatClient;
 
-    public DrawBoard getDrawBoard() {
-        return drawBoard;
-    }
+    private transient DrawBoard drawBoard = new DrawBoard();
 
     public ClientWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard, String username) {
         this.remoteWhiteboard = remoteWhiteboard;
         this.username = username;
+        this.chatClient = chatClient;
         setContentPane(WhiteBoard);
         setTitle("Client Whiteboard");
         setSize(1000, 700);
@@ -85,6 +88,10 @@ public class ClientWhiteBoardGUI extends JFrame {
         userList.setListData(usernames);
     }
 
+    public DrawBoard getDrawBoard() {
+        return drawBoard;
+    }
+
     public void update() {
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {
@@ -123,6 +130,15 @@ public class ClientWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 drawBoard.setColor(JColorChooser.showDialog(null, "Select a Colour", Color.black));
+            }
+        });
+
+        // send chat
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String message = chatInput.getText();
+                chatClient.sendRequest(message);
             }
         });
     }

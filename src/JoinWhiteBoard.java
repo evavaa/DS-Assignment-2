@@ -1,3 +1,4 @@
+import Whiteboard.ChatClient;
 import Whiteboard.ClientWhiteBoardGUI;
 import client.Client;
 import remote.IRemoteWhiteboard;
@@ -26,7 +27,7 @@ public class JoinWhiteBoard {
             username = args[2];
 
         } catch (Exception e) {
-            // JOptionPane.showMessageDialog(null, "Please provide server address and port number!", "Server Error", JOptionPane.ERROR_MESSAGE);
+            // JOptionPane.showMessageDialog(null, "Please provide server address, port number and username!", "Server Error", JOptionPane.ERROR_MESSAGE);
             ip = "localhost";
             port = 2000;
             username = "user1";
@@ -50,45 +51,20 @@ public class JoinWhiteBoard {
             }
 
             // wait for manager's approval before joining the whiteboard
-            try {
-                JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.", "Message", JOptionPane.INFORMATION_MESSAGE);
-
-                Socket socket = new Socket(ip, port);
-
-                // get the input/output streams for reading/writing data from/to the socket
-                DataInputStream input = new DataInputStream(socket.getInputStream());
-                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-
-                // send message to server
-                output.writeUTF(username);
-                output.flush();
-                System.out.println("Message sent");
-
-                // receive response from server
-                String response = input.readUTF();
-                System.out.println("Response: " + response);
-
-                // if the manager refuses the client to join the whiteboard, exit
-                if (response.equals("no")) {
-                    JOptionPane.showMessageDialog(null, "The manager refuses the connection.", "Request Declined",  JOptionPane.OK_OPTION);
-                    System.exit(0);
-                }
-                // approval received from the manager
-                else if (response.equals("yes")) {
-                    System.out.println("Connect Successfully.");
-                    // initialise a client
-                    ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard, username);
-                    Client client = new Client(username, clientGUI, remoteWhiteboard);
-
-                    // register on the remoteWhiteboard
-                    remoteWhiteboard.registerClient(client);
-                }
-                output.close();
-                input.close();
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.");
+            if (! remoteWhiteboard.getApproval(username)) {
+                JOptionPane.showMessageDialog(null, "The manager refuses the connection.", "Request Declined",  JOptionPane.OK_OPTION);
+                System.exit(0);
             }
+
+            // initialise a client
+            ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard, username);
+            Client client = new Client(username, clientGUI, remoteWhiteboard);
+
+            // register on the remoteWhiteboard
+            remoteWhiteboard.registerClient(client);
+
+            startConnection(ip, port);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -98,5 +74,13 @@ public class JoinWhiteBoard {
             JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your input.", "Error", JOptionPane.WARNING_MESSAGE);
         }
 
+    }
+
+    public static void startConnection(String ip, int port) {
+        try {
+            Socket socket = new Socket(ip, port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

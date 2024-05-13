@@ -29,4 +29,6 @@ public interface IRemoteWhiteboard extends Remote {
     void clear() throws RemoteException;
 
     void kickOut(String username) throws RemoteException;
+
+    boolean getApproval(String username) throws RemoteException;
 }

@@ -4,6 +4,8 @@ import Whiteboard.DrawBoard;
 import Whiteboard.ManagerWhiteBoardGUI;
 import remote.IRemoteManager;
 import remote.IRemoteWhiteboard;
+
+import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -33,6 +35,13 @@ public class Manager extends UnicastRemoteObject implements IRemoteManager {
     @Override
     public void updateBoard() {
         drawBoard.repaint();
+    }
+
+    @Override
+    public boolean getApproval(String username) {
+        String message = "Allow " + username  + " to share your whiteboard?";
+        int reply = JOptionPane.showConfirmDialog(null, message, "Message",  JOptionPane.YES_NO_OPTION);
+        return (reply == JOptionPane.YES_OPTION);
     }
 
 }

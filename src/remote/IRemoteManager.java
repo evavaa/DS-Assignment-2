@@ -13,4 +13,6 @@ public interface IRemoteManager extends Remote {
     void updateUsers(String[] usernames) throws RemoteException;
 
     String getUsername() throws RemoteException;
+
+    boolean getApproval(String username) throws RemoteException;
 }

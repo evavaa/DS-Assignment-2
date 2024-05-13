@@ -1,6 +1,9 @@
 package remote;
 
+import Whiteboard.ClientWhiteBoardGUI;
 import Whiteboard.Shape;
+
+import javax.swing.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -64,6 +67,16 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     public void registerClient(IRemoteClient client) throws RemoteException {
         clients.put(client.getUsername(), client);
         updateUserList();
+    }
+
+    @Override
+    public boolean getApproval(String username) {
+        try {
+            return manager.getApproval(username);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

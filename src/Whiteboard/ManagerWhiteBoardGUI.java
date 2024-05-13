@@ -41,12 +41,14 @@ public class ManagerWhiteBoardGUI extends JFrame {
     private JMenuItem closeFile;
     private IRemoteWhiteboard remoteWhiteboard;
     private String username;
+    private ChatClient chatClient;
 
     private transient DrawBoard drawBoard = new DrawBoard();
 
     public ManagerWhiteBoardGUI(IRemoteWhiteboard remoteWhiteboard, String username) {
         this.remoteWhiteboard = remoteWhiteboard;
         this.username = username;
+        //this.chatClient = chatClient;
         setContentPane(WhiteBoard);
         setTitle("Manager Whiteboard");
         setSize(1000, 700);
@@ -102,7 +104,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
         update();
 
         setVisible(true);
-
     }
 
     public DrawBoard getDrawBoard() {
@@ -177,6 +178,15 @@ public class ManagerWhiteBoardGUI extends JFrame {
             }
         });
 
+        // send chat
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String message = chatInput.getText();
+                chatClient.sendRequest(message);
+            }
+        });
+
         // new file
         newFile.addActionListener(new ActionListener() {
             @Override
@@ -191,6 +201,8 @@ public class ManagerWhiteBoardGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("not yet");
+                JFileChooser fileChooser = new JFileChooser();
+                int i = fileChooser.showOpenDialog(null);
 
             }
         });

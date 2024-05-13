@@ -1,18 +1,27 @@
 package server;
 
+import Whiteboard.ChatClient;
 import Whiteboard.ClientWhiteBoardGUI;
+import client.Client;
+import org.json.JSONObject;
 import remote.IRemoteWhiteboard;
 import remote.RemoteWhiteboard;
 
+import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 
 public class WhiteboardServer {
     private static String ip;
     private static int port;
+    private ArrayList<Client> clients = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -35,28 +44,50 @@ public class WhiteboardServer {
             e.printStackTrace();
         }
 
-//        try {
-//            // create a server socket for client connection
-//            ServerSocket server = new ServerSocket(port);
-//            System.out.println("Waiting for client connection-");
-//
-//            // wait for connections
-//            while (true) {
-//                Socket client = server.accept();
-//                System.out.println("New client applying for connection!");
-//
-//                // start a new thread for a connection
-//                Thread t = new Thread(() -> serveClient(client));
-//                t.start();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            // create a server socket for client communication
+            ServerSocket server = new ServerSocket(port);
+            System.out.println("Waiting for client connection-");
+
+            // wait for connections
+            while (true) {
+                Socket client = server.accept();
+                System.out.println("New client applying for connection!");
+
+                // start a new thread for a connection
+                Thread t = new Thread(() -> serveClient(client));
+                t.start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    private static void serveClient(Socket client) {
+        try(Socket clientSocket = client) {
+            // Input stream & Output Stream
+            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
+            DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
 
-//    private static void serveClient(Socket client) {
-//
-//
-//    }
+            // receive message from the client
+            String request = input.readUTF();
+            System.out.println("CLIENT: " + request);
+
+            JSONObject requestJSON = new JSONObject(request);
+            String user = requestJSON.getString("user");
+            String message = requestJSON.getString("message");
+
+            String response = null;
+            // send response back to the client
+            System.out.println("Response sent: " + response);
+            output.writeUTF(response);
+            output.flush();
+
+        }
+        catch (IOException e)
+        {
+            JOptionPane.showMessageDialog(null, "Cannot connect to the client.", "Client Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 }
