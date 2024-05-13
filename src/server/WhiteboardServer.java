@@ -39,51 +39,7 @@ public class WhiteboardServer {
         }catch(Exception e) {
             e.printStackTrace();
         }
-
-//        try {
-//            // create a server socket for client communication
-//            ServerSocket server = new ServerSocket(port);
-//            System.out.println("Waiting for client connection-");
-//
-//            // wait for connections
-//            while (true) {
-//                Socket client = server.accept();
-//                System.out.println("New client applying for connection!");
-//
-//                // start a new thread for a connection
-//                Thread t = new Thread(() -> serveClient(client));
-//                t.start();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    private static void serveClient(Socket client) {
-        try(Socket clientSocket = client) {
-            // Input stream & Output Stream
-            DataInputStream input = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
 
-            // receive message from the client
-            String request = input.readUTF();
-            System.out.println("CLIENT: " + request);
-
-            JSONObject requestJSON = new JSONObject(request);
-            String user = requestJSON.getString("user");
-            String message = requestJSON.getString("message");
-
-            String response = null;
-            // send response back to the client
-            System.out.println("Response sent: " + response);
-            output.writeUTF(response);
-            output.flush();
-
-        }
-        catch (IOException e)
-        {
-            JOptionPane.showMessageDialog(null, "Cannot connect to the client.", "Client Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }
 }

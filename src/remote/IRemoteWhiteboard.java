@@ -30,7 +30,7 @@ public interface IRemoteWhiteboard extends Remote {
 
     void kickOut(String username) throws RemoteException;
 
-    boolean getApproval(String username) throws RemoteException;
+//    boolean getApproval(String username) throws RemoteException;
 
     void updateChat(String username, String message) throws RemoteException;
 }

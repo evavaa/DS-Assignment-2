@@ -77,16 +77,6 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
-    public boolean getApproval(String username) {
-        try {
-            return manager.getApproval(username);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
     public void unregisterClient(String username) throws RemoteException {
         clients.remove(username);
         updateUserList();

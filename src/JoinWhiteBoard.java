@@ -3,6 +3,10 @@ import client.Client;
 import remote.IRemoteWhiteboard;
 
 import javax.swing.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -25,7 +29,7 @@ public class JoinWhiteBoard {
             // JOptionPane.showMessageDialog(null, "Please provide server address, port number and username!", "Server Error", JOptionPane.ERROR_MESSAGE);
             ip = "localhost";
             port = 2000;
-            username = "user1";
+            username = "user2";
         }
 
         try {
@@ -46,18 +50,41 @@ public class JoinWhiteBoard {
             }
 
             // wait for manager's approval before joining the whiteboard
-            JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.");
-            if (! remoteWhiteboard.getApproval(username)) {
-                JOptionPane.showMessageDialog(null, "The manager refuses the connection.", "Request Declined",  JOptionPane.OK_OPTION);
-                System.exit(0);
+            try {
+                Socket socket = new Socket(ip, port);
+                // get the input/output streams for reading/writing data from/to the socket
+                DataInputStream input = new DataInputStream(socket.getInputStream());
+                DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+                // send message to server
+                output.writeUTF(username);
+                output.flush();
+                System.out.println("Message sent");
+                JOptionPane.showMessageDialog(null, "Waiting for the manager to approve.", "Message", JOptionPane.INFORMATION_MESSAGE);
+
+                // receive response from server
+                String response = input.readUTF();
+                System.out.println("Response: " + response);
+
+                // if the manager refuses the client to join the whiteboard, exit
+                if (response.equals("no")) {
+                    JOptionPane.showMessageDialog(null, "The manager refuses the connection.", "Request Declined",  JOptionPane.OK_OPTION);
+                    System.exit(0);
+                }
+                // approval received from the manager
+                else if (response.equals("yes")) {
+                    System.out.println("Connect Successfully.");
+                    // initialise a client
+                    ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard, username);
+                    Client client = new Client(username, clientGUI, remoteWhiteboard);
+                    // register on the remoteWhiteboard
+                    remoteWhiteboard.registerClient(client);
+                }
+                output.close();
+                input.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // initialise a client
-            ClientWhiteBoardGUI clientGUI = new ClientWhiteBoardGUI(remoteWhiteboard, username);
-            Client client = new Client(username, clientGUI, remoteWhiteboard);
-
-            // register on the remoteWhiteboard
-            remoteWhiteboard.registerClient(client);
 
         } catch (RemoteException e) {
             e.printStackTrace();
