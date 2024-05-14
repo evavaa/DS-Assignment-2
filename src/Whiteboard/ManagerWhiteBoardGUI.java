@@ -1,6 +1,5 @@
 package Whiteboard;
 
-import remote.IRemoteClient;
 import remote.IRemoteWhiteboard;
 
 import javax.imageio.ImageIO;
@@ -67,7 +66,8 @@ public class ManagerWhiteBoardGUI extends JFrame {
                     // close the GUI
                     setVisible(false);
                     try {
-                        remoteWhiteboard.notifyAppTerminate();
+                        String message = "The manager has closed the whiteboard. The application will terminate soon.";
+                        remoteWhiteboard.notifyAppTerminate(message);
                         // clear all drawings
                         remoteWhiteboard.clear();
                         remoteWhiteboard.setManager(null);
@@ -213,7 +213,8 @@ public class ManagerWhiteBoardGUI extends JFrame {
                     try {
                         // notify clients the closure of current whiteboard
                         // clients on current whiteboard do not have access to the new whiteboard
-                        remoteWhiteboard.notifyAppTerminate();
+                        String message = "The manager has created a new whiteboard. The current whiteboard will terminate soon.";
+                        remoteWhiteboard.notifyAppTerminate(message);
                         remoteWhiteboard.clear();
                     } catch (RemoteException ex) {
                         ex.printStackTrace();
@@ -244,6 +245,16 @@ public class ManagerWhiteBoardGUI extends JFrame {
                         System.out.println("shapes reset");
                         objectInput.close();
                         fileInput.close();
+
+                        try {
+                            // notify clients the closure of current whiteboard
+                            // clients on current whiteboard do not have access to the new whiteboard
+                            String message = "The manager has opened another whiteboard. The current whiteboard will terminate soon.";
+                            remoteWhiteboard.notifyAppTerminate(message);
+                            remoteWhiteboard.clear();
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
                     } catch (FileNotFoundException ex) {
                         ex.printStackTrace();
                     } catch (IOException ex) {
@@ -307,7 +318,8 @@ public class ManagerWhiteBoardGUI extends JFrame {
                     // close the GUI
                     setVisible(false);
                     try {
-                        remoteWhiteboard.notifyAppTerminate();
+                        String message = "The manager has closed the whiteboard. The application will terminate soon.";
+                        remoteWhiteboard.notifyAppTerminate(message);
                         // clear all drawings
                         remoteWhiteboard.clear();
                         remoteWhiteboard.setManager(null);

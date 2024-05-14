@@ -2,7 +2,6 @@ package manager;
 
 import Whiteboard.DrawBoard;
 import Whiteboard.ManagerWhiteBoardGUI;
-import remote.IRemoteManager;
 import remote.IRemoteWhiteboard;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

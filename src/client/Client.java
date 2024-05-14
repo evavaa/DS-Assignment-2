@@ -2,7 +2,6 @@ package client;
 
 import Whiteboard.ClientWhiteBoardGUI;
 import Whiteboard.DrawBoard;
-import remote.IRemoteClient;
 import remote.IRemoteWhiteboard;
 
 import javax.swing.*;
@@ -46,8 +45,8 @@ public class Client extends UnicastRemoteObject implements IRemoteClient {
     }
 
     @Override
-    public void disconnect() {
-        JOptionPane.showMessageDialog(null, "The manager has closed the whiteboard. The application will terminate soon.", "Warning Message",  JOptionPane.OK_OPTION);
+    public void disconnect(String message) {
+        JOptionPane.showMessageDialog(null, message, "Warning Message",  JOptionPane.OK_OPTION);
         clientGUI.dispose();
     }
 

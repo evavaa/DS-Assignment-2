@@ -1,6 +1,9 @@
 package remote;
 
 import Whiteboard.Shape;
+import client.IRemoteClient;
+import manager.IRemoteManager;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -100,14 +103,15 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     }
 
     @Override
-    public void notifyAppTerminate() throws RemoteException {
+    public void notifyAppTerminate(String message) throws RemoteException {
         // notify all clients that the manager has closed the application
         for (IRemoteClient c : clients.values()) {
             System.out.println("disconnect client: " + c.getUsername());
-            c.disconnect();
+            c.disconnect(message);
         }
     }
 
+    @Override
     public void kickOut(String username) throws RemoteException {
         IRemoteClient client = clients.get(username);
         System.out.println("kick out client: " + username);
@@ -125,6 +129,10 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         shapes.clear();
         clients.clear();
         manager.updateBoard();
+        // update user list
+        List<String> usernames = new ArrayList<>();
+        usernames.add(manager.getUsername());
+        manager.updateUsers(usernames.toArray(new String[0]));
     }
 
 }

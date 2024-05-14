@@ -1,4 +1,4 @@
-package remote;
+package client;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -10,7 +10,7 @@ public interface IRemoteClient extends Remote {
 
     void updateUsers(String[] usernames) throws RemoteException;
 
-    void disconnect() throws RemoteException;
+    void disconnect(String message) throws RemoteException;
 
     void beKickedOut() throws RemoteException;
 

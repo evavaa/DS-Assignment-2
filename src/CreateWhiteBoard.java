@@ -39,6 +39,12 @@ public class CreateWhiteBoard {
             LocateRegistry.getRegistry(ip);
             remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
 
+            // check if there exists a manager for the whiteboard
+            if (remoteWhiteboard.hasManager()) {
+                JOptionPane.showMessageDialog(null, "There already exists a manager in this whiteboard.", "Server Error", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+
             // initialise a manager
             ManagerWhiteBoardGUI managerGUI = new ManagerWhiteBoardGUI(remoteWhiteboard, username);
             Manager manager = new Manager(username, managerGUI, remoteWhiteboard);
