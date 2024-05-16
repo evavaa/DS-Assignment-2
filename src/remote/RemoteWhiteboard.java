@@ -77,6 +77,7 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public void setManager(IRemoteManager manager) throws RemoteException {
         this.manager = manager;
+        updateUserList();
     }
 
     @Override

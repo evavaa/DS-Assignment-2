@@ -56,6 +56,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
         setTitle("Manager Whiteboard");
         setSize(1000, 700);
         setLocationRelativeTo(null);
+        chatArea.setEditable(false);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // when the manager chooses to quit, close the application and notify all clients
@@ -194,6 +195,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
                 String message = chatInput.getText();
                 try {
                     remoteWhiteboard.updateChat(username, message);
+                    chatInput.setText("");
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }

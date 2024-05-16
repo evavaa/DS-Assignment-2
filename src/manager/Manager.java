@@ -35,8 +35,8 @@ public class Manager extends UnicastRemoteObject implements IRemoteManager {
     }
 
     @Override
-    public void updateChatHistory(String send_username, String message) {
-        String newMessage = send_username + ": " + message + "\n";
+    public void updateChatHistory(String sendUsername, String message) {
+        String newMessage = sendUsername + ": " + message + "\n";
         managerGUI.updateChatHistory(newMessage);
     }
 }

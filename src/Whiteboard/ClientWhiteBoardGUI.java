@@ -42,6 +42,7 @@ public class ClientWhiteBoardGUI extends JFrame {
         setTitle("Client Whiteboard");
         setSize(1000, 700);
         setLocationRelativeTo(null);
+        chatArea.setEditable(false);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // when the client chooses to quit, unregister the client from the remote server
@@ -138,6 +139,7 @@ public class ClientWhiteBoardGUI extends JFrame {
                 String message = chatInput.getText();
                 try {
                     remoteWhiteboard.updateChat(username, message);
+                    chatInput.setText("");
                 } catch (RemoteException ex) {
                     ex.printStackTrace();
                 }
