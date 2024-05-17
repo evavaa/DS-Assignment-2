@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="server">
+    <output-path>$PROJECT_DIR$/out/artifacts/server</output-path>
+    <root id="archive" name="DS-Assignment-2.jar">
+      <element id="module-output" name="DS-Assignment-2" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Assignment 1/json-20231013.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Assignment 1/json-simple-1.1.1.wso2v2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
