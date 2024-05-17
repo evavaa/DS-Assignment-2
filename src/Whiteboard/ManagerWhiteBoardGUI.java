@@ -261,7 +261,6 @@ public class ManagerWhiteBoardGUI extends JFrame {
                             // clients on current whiteboard do not have access to the new whiteboard
                             String message = "The manager has opened another whiteboard. The current whiteboard will terminate soon.";
                             remoteWhiteboard.notifyAppTerminate(message);
-                            //remoteWhiteboard.clear();
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
