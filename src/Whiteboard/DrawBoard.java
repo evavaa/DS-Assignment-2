@@ -41,7 +41,6 @@ public class DrawBoard extends JPanel {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
         for(Shape s : shapes.values()){
             g2.setColor(s.getColor());
             g2.setStroke(defaultStroke);

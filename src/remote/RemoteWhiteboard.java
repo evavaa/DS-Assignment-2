@@ -1,8 +1,6 @@
 package remote;
 
 import Whiteboard.Shape;
-import client.IRemoteClient;
-import manager.IRemoteManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -159,6 +157,7 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
             System.out.println("disconnect client: " + c.getUsername());
             c.disconnect(message);
         }
+        clients.clear();
     }
 
     /**
@@ -191,7 +190,6 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     @Override
     public void clear() throws RemoteException {
         shapes.clear();
-        clients.clear();
         manager.updateBoard();
         // update user list
         List<String> usernames = new ArrayList<>();

@@ -2,6 +2,7 @@ package client;
 
 import Whiteboard.ClientWhiteBoardGUI;
 import Whiteboard.DrawBoard;
+import remote.IRemoteClient;
 import remote.IRemoteWhiteboard;
 
 import javax.swing.*;

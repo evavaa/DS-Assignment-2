@@ -1,8 +1,6 @@
 package remote;
 
 import Whiteboard.Shape;
-import client.IRemoteClient;
-import manager.IRemoteManager;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

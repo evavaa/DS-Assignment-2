@@ -248,6 +248,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
                         FileInputStream fileInput = new FileInputStream(file);
                         ObjectInputStream objectInput = new ObjectInputStream(fileInput);
                         ConcurrentHashMap<Integer, Shape> shapes = (ConcurrentHashMap<Integer, Shape>)objectInput.readObject();
+                        System.out.println("Open an existing whiteboard.");
 
                         // upload shapes to remote whiteboard
                         remoteWhiteboard.setShapes(shapes);
@@ -260,7 +261,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
                             // clients on current whiteboard do not have access to the new whiteboard
                             String message = "The manager has opened another whiteboard. The current whiteboard will terminate soon.";
                             remoteWhiteboard.notifyAppTerminate(message);
-                            remoteWhiteboard.clear();
+                            //remoteWhiteboard.clear();
                         } catch (RemoteException ex) {
                             ex.printStackTrace();
                         }
@@ -288,6 +289,7 @@ public class ManagerWhiteBoardGUI extends JFrame {
                     String fileName = file.getAbsolutePath().toLowerCase();
                     // if the file saved last time is a txt file, then automatically save to the same file again
                     if (fileName.endsWith(".txt")) {
+                        System.out.println("Whiteboard saved to an existing txt file.");
                         try {
                             FileOutputStream fileOutput = new FileOutputStream(file);
                             ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
@@ -397,11 +399,13 @@ public class ManagerWhiteBoardGUI extends JFrame {
             // save to specified file
             try {
                 if (fileName.endsWith(".jpg") || fileName.endsWith(".png")) {
+                    System.out.println("Whiteboard saved to an image file.");
                     BufferedImage image = new BufferedImage(drawBoard.getWidth(), drawBoard.getHeight(), BufferedImage.TYPE_INT_RGB);
                     Graphics g = image.getGraphics();
                     drawBoard.printAll(g);
                     ImageIO.write(image, extension, file);
                 } else if (fileName.endsWith(".txt")) {
+                    System.out.println("Whiteboard saved to a txt file.");
                     FileOutputStream fileOutput = new FileOutputStream(file);
                     ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
                     objectOutput.writeObject(remoteWhiteboard.getShapes());
