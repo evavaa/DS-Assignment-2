@@ -25,10 +25,11 @@ public class DrawBoard extends JPanel {
         init();
     }
 
-    public void setRemoteWhiteboard(IRemoteWhiteboard remoteWhiteboard) {
-        this.remoteWhiteboard = remoteWhiteboard;
-    }
-
+    /**
+     * This method is invoked when the repaint function is called.
+     * Draw all the shapes on the whiteboard.
+     * @param g
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -81,6 +82,9 @@ public class DrawBoard extends JPanel {
         }
     }
 
+    /**
+     * Set up mouse listener.
+     */
     private void init() {
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -192,6 +196,7 @@ public class DrawBoard extends JPanel {
         this.eraserSize = eraserSize;
     }
 
-
-
+    public void setRemoteWhiteboard(IRemoteWhiteboard remoteWhiteboard) {
+        this.remoteWhiteboard = remoteWhiteboard;
+    }
 }

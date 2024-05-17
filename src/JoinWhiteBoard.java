@@ -16,6 +16,7 @@ public class JoinWhiteBoard {
     public static String username;
     private static String ip;
     private static int port;
+    private static int portTCP;
     private static IRemoteWhiteboard remoteWhiteboard;
 
     public static void main(String[] args) {
@@ -23,23 +24,21 @@ public class JoinWhiteBoard {
             // read server address and port number from the command line
             ip = args[0];
             port = Integer.parseInt(args[1]);
-            username = args[2];
+            portTCP = Integer.parseInt(args[2]);
+            username = args[3];
 
         } catch (Exception e) {
-            // JOptionPane.showMessageDialog(null, "Please provide server address, port number and username!", "Server Error", JOptionPane.ERROR_MESSAGE);
-            ip = "localhost";
-            port = 2000;
-            username = "user2";
+            JOptionPane.showMessageDialog(null, "Please provide server address, port number for both RMI and TCP sockets as well as and a username!", "Server Error", JOptionPane.ERROR_MESSAGE);
         }
 
         try {
-            Registry registry = LocateRegistry.getRegistry(ip, 1099);
+            Registry registry = LocateRegistry.getRegistry(ip, port);
             LocateRegistry.getRegistry(ip);
             remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
 
             // check if there exists a manager for the whiteboard
             if (! remoteWhiteboard.hasManager()) {
-                JOptionPane.showMessageDialog(null, "There is no manager in this whiteboard.", "Server Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Whiteboard not exist. Please exit the application.", "Server Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
 
@@ -51,7 +50,7 @@ public class JoinWhiteBoard {
 
             // wait for manager's approval before joining the whiteboard
             try {
-                Socket socket = new Socket(ip, port);
+                Socket socket = new Socket(ip, portTCP);
                 // get the input/output streams for reading/writing data from/to the socket
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream());
@@ -84,6 +83,12 @@ public class JoinWhiteBoard {
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                // graceful exit
+                int reply = JOptionPane.showConfirmDialog(null, "The server is currently down. Do you want to exit the application?", "Server Error",  JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION)
+                {
+                    System.exit(0);
+                }
             }
 
         } catch (RemoteException e) {
@@ -91,7 +96,7 @@ public class JoinWhiteBoard {
             JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your server.", "Error", JOptionPane.WARNING_MESSAGE);
         } catch (NotBoundException e) {
             e.printStackTrace();
-            JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your input.", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your port and server address.", "Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 }

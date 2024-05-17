@@ -9,8 +9,9 @@ public class WhiteboardServer {
 
     public static void main(String[] args) {
         try{
+            int port = Integer.parseInt(args[1]);
             IRemoteWhiteboard remoteWhiteboard = new RemoteWhiteboard();
-            Registry registry = LocateRegistry.createRegistry(1099);
+            Registry registry = LocateRegistry.createRegistry(port);
             registry.bind("whiteboard", remoteWhiteboard);
             System.out.println("Whiteboard server ready. Waiting for connection...");
         }catch(Exception e) {

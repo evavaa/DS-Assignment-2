@@ -112,18 +112,25 @@ public class ManagerWhiteBoardGUI extends JFrame {
         setVisible(true);
     }
 
-    public DrawBoard getDrawBoard() {
-        return drawBoard;
-    }
-
+    /**
+     * Update the content of user list on GUI.
+     * @param usernames a list of usernames of all users
+     */
     public void updateUserList(String[] usernames) {
         userList.setListData(usernames);
     }
 
+    /**
+     * Update the content of chat window on GUI.
+     * @param message new message to be displayed in the chat box
+     */
     public void updateChatHistory(String message) {
         chatArea.append(message);
     }
 
+    /**
+     * Set up button listeners.
+     */
     public void update() {
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {
@@ -335,6 +342,9 @@ public class ManagerWhiteBoardGUI extends JFrame {
 
     }
 
+    /**
+     * Set up eraser with adjustable sizes.
+     */
     private void createUIComponents() {
         // setup eraser sizes
         eraserSize = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
@@ -347,6 +357,10 @@ public class ManagerWhiteBoardGUI extends JFrame {
         });
     }
 
+    /**
+     * Create a file chooser with three different formats.
+     * @return
+     */
     private JFileChooser getFileChooser() {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
@@ -362,6 +376,9 @@ public class ManagerWhiteBoardGUI extends JFrame {
         return fileChooser;
     }
 
+    /**
+     * Manager can save the whiteboard into three different formats.
+     */
     private void saveAs() {
         // let the user choose the file format
         fileChooser = getFileChooser();
@@ -397,5 +414,9 @@ public class ManagerWhiteBoardGUI extends JFrame {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public DrawBoard getDrawBoard() {
+        return drawBoard;
     }
 }

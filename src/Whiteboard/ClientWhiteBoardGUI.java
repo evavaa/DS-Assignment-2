@@ -79,18 +79,25 @@ public class ClientWhiteBoardGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Update the content of user list on GUI.
+     * @param usernames a list of usernames of all users
+     */
     public void updateUserList(String[] usernames) {
         userList.setListData(usernames);
     }
 
+    /**
+     * Update the content of chat window on GUI.
+     * @param message new message to be displayed in the chat box
+     */
     public void updateChatHistory(String message) {
         chatArea.append(message);
     }
 
-    public DrawBoard getDrawBoard() {
-        return drawBoard;
-    }
-
+    /**
+     * Set up button listeners.
+     */
     public void update() {
         // free draw
         freeDrawButton.addActionListener(new ActionListener() {
@@ -147,6 +154,9 @@ public class ClientWhiteBoardGUI extends JFrame {
         });
     }
 
+    /**
+     * Set up eraser with adjustable sizes.
+     */
     private void createUIComponents() {
         // setup eraser sizes
         eraserSize = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
@@ -157,6 +167,10 @@ public class ClientWhiteBoardGUI extends JFrame {
                 drawBoard.setEraserSize((Integer) eraserSize.getValue());
             }
         });
+    }
+
+    public DrawBoard getDrawBoard() {
+        return drawBoard;
     }
 
 

@@ -20,20 +20,37 @@ public class Manager extends UnicastRemoteObject implements IRemoteManager {
         this.drawBoard = managerGUI.getDrawBoard();
     }
 
+    /**
+     * Get the username of the manager.
+     * @return
+     */
+    @Override
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Prompt the GUI to update user list displayed on the interface.
+     * @param usernames a list of usernames to be displayed
+     */
     @Override
     public void updateUsers(String[] usernames) {
         managerGUI.updateUserList(usernames);
     }
 
+    /**
+     * Prompt the canvas to paint all drawings again.
+     */
     @Override
     public void updateBoard() {
         drawBoard.repaint();
     }
 
+    /**
+     * Prompt the GUI to update the chat window with the new message.
+     * @param sendUsername user who sends the new message
+     * @param message content of the message
+     */
     @Override
     public void updateChatHistory(String sendUsername, String message) {
         String newMessage = sendUsername + ": " + message + "\n";

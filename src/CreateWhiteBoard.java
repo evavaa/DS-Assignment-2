@@ -17,6 +17,7 @@ public class CreateWhiteBoard {
     public static String username;
     private static String ip;
     private static int port;
+    private static int portTCP;
     private static IRemoteWhiteboard remoteWhiteboard;
 
     public static void main(String[] args) {
@@ -24,18 +25,15 @@ public class CreateWhiteBoard {
             // read server address and port number from the command line
             ip = args[0];
             port = Integer.parseInt(args[1]);
-            username = args[2];
+            portTCP = Integer.parseInt(args[2]);
+            username = args[3];
         } catch (Exception e) {
-            // JOptionPane.showMessageDialog(null, "Please provide server address, port number and username!", "Server Error", JOptionPane.ERROR_MESSAGE);
-            //TODO: for testing purpose only
-            ip = "localhost";
-            port = 2000;
-            username = "manager";
+            JOptionPane.showMessageDialog(null, "Please provide server address, port number for both RMI and TCP sockets as well as a username!", "Server Error", JOptionPane.ERROR_MESSAGE);
         }
 
         try {
             // connect to the rmi registry that is running on given ip address
-            Registry registry = LocateRegistry.getRegistry(ip, 1099);
+            Registry registry = LocateRegistry.getRegistry(ip, port);
             LocateRegistry.getRegistry(ip);
             remoteWhiteboard = (IRemoteWhiteboard) registry.lookup("whiteboard");
 
@@ -55,7 +53,7 @@ public class CreateWhiteBoard {
 
             // create socket
             try {
-                ServerSocket socket = new ServerSocket(port);
+                ServerSocket socket = new ServerSocket(portTCP);
                 System.out.println("Waiting for client join request-");
                 // wait for join request
                 while(true)
@@ -68,18 +66,22 @@ public class CreateWhiteBoard {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                JOptionPane.showConfirmDialog(null, "Unable to create a server socket. Please check your port number.", "Error", JOptionPane.WARNING_MESSAGE);
             }
-
 
         } catch (RemoteException e) {
             e.printStackTrace();
-            JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your server.", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showConfirmDialog(null, "Unable to connect to remote server. Please check your server.", "Error", JOptionPane.WARNING_MESSAGE);
         } catch (NotBoundException e) {
             e.printStackTrace();
-            JOptionPane.showConfirmDialog(null, "Unable to connect to RMI. Please check your input.", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showConfirmDialog(null, "Unable to connect to remote server. Please check your port and server address.", "Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 
+    /**
+     * Manager approves or denies the join requests sent by other peers.
+     * @param client other peers
+     */
     private static void serveClient(Socket client) {
         try(Socket clientSocket = client) {
             // Input stream & Output Stream

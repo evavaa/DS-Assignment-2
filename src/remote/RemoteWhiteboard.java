@@ -21,6 +21,12 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
     public RemoteWhiteboard() throws RemoteException {
     }
 
+    /**
+     * Check if the provided username is unique.
+     * @param key input username
+     * @return whether the username is unique
+     * @throws RemoteException
+     */
     @Override
     public boolean isUniqueUsername(String key) throws RemoteException {
         if (clients.get(key) != null) {
@@ -41,6 +47,11 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         return shapes;
     }
 
+    /**
+     * Set the drawings on the whiteboard and notify all users to update their canvas.
+     * @param shapes a list of drawings
+     * @throws RemoteException
+     */
     @Override
     public void setShapes(ConcurrentHashMap<Integer, Shape> shapes) throws RemoteException {
         this.shapes = shapes;
@@ -53,6 +64,11 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         manager.updateBoard();
     }
 
+    /**
+     * Add a piece of drawing to the whiteboard and notify all users to update their canvas.
+     * @param shape a list of drawings
+     * @throws RemoteException
+     */
     @Override
     public void addShape(Shape shape) throws RemoteException {
         shapes.put(shapes.size(), shape);
@@ -66,6 +82,12 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         manager.updateBoard();
     }
 
+    /**
+     * Notify all users to update their chat window when a new message comes in.
+     * @param username username of the peer who sends the message
+     * @param message content of the message
+     * @throws RemoteException
+     */
     @Override
     public void updateChat(String username, String message) throws RemoteException {
         for (IRemoteClient c : clients.values()) {
@@ -74,24 +96,46 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         manager.updateChatHistory(username, message);
     }
 
+    /**
+     * Set the whiteboard manager to a particular user.
+     * @param manager
+     * @throws RemoteException
+     */
     @Override
     public void setManager(IRemoteManager manager) throws RemoteException {
         this.manager = manager;
-        updateUserList();
+        if (manager != null) {
+            updateUserList();
+        }
+
     }
 
+    /**
+     * Register the provided client for future updates.
+     * @param client user to be added on remote server
+     * @throws RemoteException
+     */
     @Override
     public void registerClient(IRemoteClient client) throws RemoteException {
         clients.put(client.getUsername(), client);
         updateUserList();
     }
 
+    /**
+     * Remove the client from the remote server.
+     * @param username username of the peer to be removed
+     * @throws RemoteException
+     */
     @Override
     public void unregisterClient(String username) throws RemoteException {
         clients.remove(username);
         updateUserList();
     }
 
+    /**
+     * Notify all users to update the user list displayed on their GUI
+     * @throws RemoteException
+     */
     private void updateUserList() throws RemoteException {
         // notify all clients and manager to update user list
         List<String> usernames = new ArrayList<>(clients.keySet());
@@ -103,6 +147,11 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         manager.updateUsers(usernames.toArray(new String[0]));
     }
 
+    /**
+     * Notify all users that the manager has closed the application and ask them to exit.
+     * @param message warning message that describes the reason of whiteboard termination
+     * @throws RemoteException
+     */
     @Override
     public void notifyAppTerminate(String message) throws RemoteException {
         // notify all clients that the manager has closed the application
@@ -112,6 +161,11 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         }
     }
 
+    /**
+     * Manager kicks out a particular user in the whiteboard.
+     * @param username username of the user to be kicked out
+     * @throws RemoteException
+     */
     @Override
     public void kickOut(String username) throws RemoteException {
         IRemoteClient client = clients.get(username);
@@ -120,11 +174,20 @@ public class RemoteWhiteboard extends UnicastRemoteObject implements IRemoteWhit
         unregisterClient(username);
     }
 
+    /**
+     * Check if the whiteboard has been created by finding out whether a manager exists.
+     * @return whether there exists a whiteboard
+     * @throws RemoteException
+     */
     @Override
     public boolean hasManager() throws RemoteException {
         return (manager != null);
     }
 
+    /**
+     * Clear all drawings on the canvas and remove all users from the user list.
+     * @throws RemoteException
+     */
     @Override
     public void clear() throws RemoteException {
         shapes.clear();
