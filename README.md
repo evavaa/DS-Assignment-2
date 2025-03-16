@@ -1,4 +1,4 @@
-# DS-Assignment-2
+# COMP90015 Distributed System Assignment-2 -- Shared Whiteboard
 
 ## Basic Features
 Multiple users can draw on a shared interactive canvas
@@ -27,8 +27,7 @@ colours should be available
 - Users can join the whiteboard application any time by
   inputting server’s IP address and port number
 - A notification will be delivered to the manager if any peer wants to
-  join. The peer can join in only after the manager approves
-  ◼ A dialog showing “someone wants to share your whiteboard”
+  join. The peer can join in only after the manager approves.
 
 ### Whiteboard
 - When displaying a whiteboard, the client user interface should show the
@@ -38,31 +37,3 @@ usernames of other users who are currently editing the same whiteboard
   can kick someone out at any time
 - When the manager quits, the application will be terminated. All the
   peers will get a message notifying them
-
-## Development
-### Phase 1: Single-user standalone whiteboard
-
-- Implement a client that allows a user to draw all the
-expected elements
-- Implement a server so that client and server are able to
-communicate entities created in Task A
-
-### Phase 2: User management skeleton
-- Allow the manager to create a whiteboard
-- Allow other peers to connect and join in by getting approval from
-the manager
-- Allow the manager to choose whether a peer can join in
-- join in means the peer's name will appear in the user list
-- Allow the joined peer to choose to quit
-- Allow the manager to close the application, and all peers get
-notified
-- Allow the manager to kick out a certain peer/user
-
-### Phases 3: Final
-- Integrate the whiteboard with the user
-management skeleton (phases 1 and 2)
-- Design issues:
-  - What communication mechanism will be used? RMI
-  - How to propagate the modification from one peer to
-other peers? You may need an event-based mechanism 
-  - How many threads do we need per peer? At least one for drawing, one for messaging
