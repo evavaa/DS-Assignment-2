@@ -1,4 +1,4 @@
-# COMP90015 Distributed System Assignment-2 -- Shared Whiteboard
+# COMP90015 Distributed System Assignment 2 -- Shared Whiteboard
 
 ## Basic Features
 Multiple users can draw on a shared interactive canvas
