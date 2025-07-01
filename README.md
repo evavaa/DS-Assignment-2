@@ -1,39 +1,73 @@
-# COMP90015 Distributed System Assignment 2 -- Shared Whiteboard
+# Distributed Shared Whiteboard
 
-## Basic Features
-Multiple users can draw on a shared interactive canvas
+## Features
 
-Your system will support a single whiteboard that is shared between all clients.
+### Drawing & Editing
+- **Shapes**: Line, circle, oval, rectangle
+- **Free draw and erase** with multiple eraser sizes
+- **Text input** anywhere on the whiteboard
+- **Color selection** with 16+ available colors
 
-Key Elements with GUI
-- Shapes: at least your white board should support for line, circle, oval, and rectangle
-- Free draw and erase must be implemented (it will be more convenient if there are
-several sizes of eraser)
-- Text inputting– allow user to type text anywhere inside the white board
-- User should be able to choose their favourite colour to draw the above features. At least 16
-colours should be available
+### Collaboration
+- **Real-time sharing** between multiple users
+- **Text-based chat** for user communication
+- **User management**: Manager can approve/reject users and kick out peers
+- **File operations**: New, open, save, saveAs, close (manager only)
 
-## Advanced Features
-- Chat Window (text based): To allow users to communicate with each other by typing a text
-- A “File” menu with new, open, save, saveAs and close should be provided (only the manager can control this)
-- Allow the manager to kick out a certain peer/user
+### User Interface
+- **Login system**: Unique usernames, create or join whiteboards
+- **User list**: Display active users and their status
+- **Manager privileges**: First user becomes manager with full control
+- **Network joining**: Connect via IP address and port
+- **Approval system**: Manager must approve new users
 
-## GUI
-### User Login Page
-- Users must provide a unique username when joining the whiteboard
-- The login page should allow users to choose to create a new whiteboard or join an existing one
-- The first user creates a whiteboard and becomes the whiteboard’s
-  manager
-- Users can join the whiteboard application any time by
-  inputting server’s IP address and port number
-- A notification will be delivered to the manager if any peer wants to
-  join. The peer can join in only after the manager approves.
+## How to Run
 
-### Whiteboard
-- When displaying a whiteboard, the client user interface should show the
-usernames of other users who are currently editing the same whiteboard
-- An online peer list should be maintained and displayed
-- The manager
-  can kick someone out at any time
-- When the manager quits, the application will be terminated. All the
-  peers will get a message notifying them
+This application consists of three main components: a server and two types of clients. Follow these steps to run the distributed whiteboard:
+
+
+### Step 1: Start the Whiteboard Server
+```bash
+java -jar WhiteboardServer.jar [port]
+```
+- `port`: Port number for the server
+- Example: `java -jar WhiteboardServer.jar 1099`
+
+
+### Step 2: Create a Whiteboard (Manager)
+```bash
+java -jar CreateWhiteBoard.jar [serverIP] [serverPort] [username]
+```
+- `serverIP`: IP address of the server (use `localhost` or `127.0.0.1` if running locally)
+- `serverPort`: Port number the server is running on
+- `tcpPort`: Port number for the TCP management server (must be different from the main server port, used for user administration)
+- `username`: Your unique username as the manager
+- Example: `java -jar CreateWhiteBoard.jar localhost 1099 3000 Manager1`
+
+The whiteboard manager can:
+- Control file operations (new, open, save, saveAs, close)
+- Approve/reject users joining the whiteboard
+- Kick out other users
+
+### Step 3: Join an Existing Whiteboard (Regular Users)
+```bash
+java -jar JoinWhiteBoard.jar [serverIP] [serverPort] [username]
+```
+- `serverIP`: IP address of the server
+- `serverPort`: Port number the server is running on  
+- `tcpPort`: Port number for the TCP server
+- `username`: Your unique username
+- Example: `java -jar JoinWhiteBoard.jar localhost 1099 3000 User1`
+
+**Note**: Regular users need approval from the manager to join the whiteboard.
+
+### Running on Multiple Machines
+1. Start the server on one machine and note its IP address
+2. Replace `localhost` with the actual IP address when running clients from other machines
+3. Ensure firewall settings allow connections on the specified port
+
+### Troubleshooting
+- Make sure Java is installed and accessible from command line
+- Verify the server is running before starting clients
+- Check network connectivity if running across multiple machines
+- Ensure usernames are unique for each user
