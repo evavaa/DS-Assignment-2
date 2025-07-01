@@ -1,5 +1,11 @@
 # Distributed Shared Whiteboard
 
+<img width="912" alt="ds-1" src="https://github.com/user-attachments/assets/6e75a193-4f9e-439d-8f61-61bf69cce3f3" />
+
+<img width="766" alt="ds-2" src="https://github.com/user-attachments/assets/b0682631-d02f-45c5-bf36-8b6bad3c2cfc" />
+
+
+
 ## Features
 
 ### Drawing & Editing
